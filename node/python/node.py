@@ -1,4 +1,4 @@
-from simplet_socket import *
+from simplet_socket import simple_socket
 from signals import *
 import threading
 import time
