@@ -39,9 +39,9 @@ class Signal:
     SC_IN       = 2
     SC_OUT      = 3
 
-    ST_BOOL     = 1
-    ST_REAL32   = 2
-    ST_INT16    = 3
+    ST_BOOL     = 1 # Data types that can fit in a single byte has number 1 - 20
+    ST_INT16    = 21 # Data types that can fir in two bytes has number 21-40
+    ST_REAL32   = 41 # etc..
     
 
     def __init__(self, sign_id : int, sub_id : int, signalConfig : int, signalType : int, name : str, value = None, params = None, cb = None, other : dict = None):
