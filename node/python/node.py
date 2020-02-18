@@ -32,24 +32,25 @@ class Node:
 
             # Update signals
             signs = self.dataArea.getSignalsForSending()
-            self.socket.send(self._packdata_(signs))
+            self.socket.send(self._packdata_(signs[0], config = True))
+            self.socket.send(self._packdata_(signs[1]))
 
     def async_close(self):
         self.socket.disconnect()
 
-    def _packdata_(self, data) -> bytearray:
+    def _packdata_(self, data, config = False) -> bytearray:
         if len(data) == 0:
             return None
         frame = bytearray()
         for s in data:
-            p = s.pack()
+            p = s.pack(config)
             if p is not None:
                 frame.extend(p)
 
         # TBD: Add headers 
         L = len(frame)+4
         if L > 0xFFFF:
-            raise Exception("Frambuffer overflow")
+            raise Exception("Framebuffer overflow")
         B = bytes([L//0x100, L%0x100])
         frame.insert(0, B[1])
         frame.insert(0, B[0])

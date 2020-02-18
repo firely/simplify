@@ -6,7 +6,7 @@ if __name__ == "__main__":
     #node = node.Node('192.168.10.183', 80)
     node = node.Node('127.0.0.1', 10030)
 
-    sign = Signal(0, 1, Signal.SC_OUT, Signal.ST_BOOL, "Flip", value = False)
+    sign = Signal(1, 1, Signal.SC_OUT, Signal.ST_BOOL, "Flip", value = False)
     node.AddSignal(sign)
 
     lock = threading.Lock()

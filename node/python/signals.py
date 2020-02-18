@@ -1,4 +1,5 @@
 import threading
+import codecs
 
 class DataArea:
 
@@ -8,6 +9,7 @@ class DataArea:
         self.data_cyclic = []
         self.updateLock = threading.Lock()
         self.data_pendingUpdate = []
+        self.data_configToSend = []
 
     def addSignal(self, signal : object):
         # TBD: Check for duplicats
@@ -18,6 +20,8 @@ class DataArea:
         if signal.signalConfig == Signal.SC_OUT:
             self.data_out.append(signal)
         signal.setDataArea(self)
+        signal.queue_send_config_to_server() # Have signal information sent across network
+
 
     def triggerUpdate(self, signal):
         # Mark a signal ready for sending
@@ -25,12 +29,20 @@ class DataArea:
         self.data_pendingUpdate.append(signal)
         self.updateLock.release()
 
+    def triggerSendConfig(self, signal):
+        # Mark a signal ready for sending
+        self.updateLock.acquire()
+        self.data_configToSend.append(signal)
+        self.updateLock.release()
+
     def getSignalsForSending(self):
         self.updateLock.acquire()
         ret = self.data_pendingUpdate
         self.data_pendingUpdate = []
+        config = self.data_configToSend
+        self.data_configToSend = []
         self.updateLock.release()
-        return ret
+        return config, ret
 
 
 
@@ -53,6 +65,7 @@ class Signal:
         self.params = params
         self.value = value
         self.cb = cb
+        self.config_bytes = Signal.generate_config_data(self)
 
     def __str__(self):
         return self.name + " (" + str(self.value) + ")"
@@ -71,15 +84,39 @@ class Signal:
     def setDataArea(self, dataArea):
         self.dataArea = dataArea
 
+    def queue_send_config_to_server(self):
+        self.dataArea.triggerSendConfig(self)
+
     def read_cb(self):
         if self.cb != None:
             self.cb(self)
 
-    def pack(self) -> bytearray:
+    def pack(self, config = False) -> bytearray:
+        if config:
+            return self.config_bytes
         frame = bytearray()
         frame.extend(bytes([self.sign_id//0x100, self.sign_id%0x100, self.sub_id%0x100]))
+        frame.extend(bytes([self.signalType%0x100])) # Type
         if self.signalType == Signal.ST_BOOL:
             frame.extend(bytes([self.value%2]))
         else:
             raise NotImplementedError()
+        return frame
+
+    @ staticmethod
+    def generate_config_data(signal):
+        """
+        Create a byte array that fully describes the signal and its settings
+        """
+        frame = bytearray()
+        frame.extend(bytes([0x00, 0x00])) # A config frame starts with double zero
+        id = bytes([signal.sign_id//0x100, signal.sign_id%0x100, signal.sub_id%0x100]) # ID
+        frame.extend(id) # ID
+        config = bytes([signal.signalConfig%0x100]) # Config
+        frame.extend(config) # Config
+        type_ = bytes([signal.signalType%0x100])
+        frame.extend(type_) # Type
+        name = codecs.utf_16_encode(signal.name)[0] # Name
+        frame.extend([len(name)]) # Name length
+        frame.extend(name) # Name
         return frame
