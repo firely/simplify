@@ -45,11 +45,15 @@ namespace Simplify
                 return;
 
             ConnectionOpen = false;
-            lock (stopQueue)
+
+            if (read_thread_ref != null)
             {
-                stopQueue.Enqueue(true);
+                lock (stopQueue)
+                {
+                    stopQueue.Enqueue(true);
+                }
+                read_thread_ref.Join(5000);
             }
-            read_thread_ref.Join(5000);
             socket.Stop();
         }
 
@@ -101,8 +105,8 @@ namespace Simplify
                 var a = stream.Read(buffer, 0, buffer.Length);
                 if (a > 0)
                 {
-                    var A = new byte[a];
-                    Array.Copy(buffer, 0, A, 0, a);
+                    var A = new byte[a-4];
+                    Array.Copy(buffer, 2, A, 0, a-4);
                     lock (this.ReadBufferLock)
                     {
                         this.ReadBuffer.Enqueue(A);
