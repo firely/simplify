@@ -33,6 +33,8 @@
             this.BtnStop = new System.Windows.Forms.Button();
             this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.ListBox = new System.Windows.Forms.ListBox();
+            this.infoControl1 = new Simplify.Controls.InfoControl();
+            this.ledControl1 = new Simplify.Controls.LedControl();
             this.SuspendLayout();
             // 
             // BtnStart
@@ -68,11 +70,29 @@
             this.ListBox.Size = new System.Drawing.Size(263, 368);
             this.ListBox.TabIndex = 2;
             // 
+            // infoControl1
+            // 
+            this.infoControl1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.infoControl1.Location = new System.Drawing.Point(12, 91);
+            this.infoControl1.Name = "infoControl1";
+            this.infoControl1.Size = new System.Drawing.Size(117, 58);
+            this.infoControl1.TabIndex = 3;
+            // 
+            // ledControl1
+            // 
+            this.ledControl1.BackColor = System.Drawing.Color.Transparent;
+            this.ledControl1.Location = new System.Drawing.Point(12, 183);
+            this.ledControl1.Name = "ledControl1";
+            this.ledControl1.Size = new System.Drawing.Size(20, 20);
+            this.ledControl1.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 437);
+            this.Controls.Add(this.ledControl1);
+            this.Controls.Add(this.infoControl1);
             this.Controls.Add(this.ListBox);
             this.Controls.Add(this.BtnStop);
             this.Controls.Add(this.BtnStart);
@@ -89,6 +109,8 @@
         private System.Windows.Forms.Button BtnStop;
         private System.Windows.Forms.Timer UpdateTimer;
         private System.Windows.Forms.ListBox ListBox;
+        private Simplify.Controls.InfoControl infoControl1;
+        private Simplify.Controls.LedControl ledControl1;
     }
 }
 
