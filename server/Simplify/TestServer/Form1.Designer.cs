@@ -33,8 +33,9 @@
             this.BtnStop = new System.Windows.Forms.Button();
             this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.ListBox = new System.Windows.Forms.ListBox();
-            this.infoControl1 = new Simplify.Controls.InfoControl();
+            this.barControl1 = new Simplify.Controls.BarControl();
             this.ledControl1 = new Simplify.Controls.LedControl();
+            this.infoControl1 = new Simplify.Controls.InfoControl();
             this.SuspendLayout();
             // 
             // BtnStart
@@ -70,13 +71,13 @@
             this.ListBox.Size = new System.Drawing.Size(263, 368);
             this.ListBox.TabIndex = 2;
             // 
-            // infoControl1
+            // barControl1
             // 
-            this.infoControl1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.infoControl1.Location = new System.Drawing.Point(12, 91);
-            this.infoControl1.Name = "infoControl1";
-            this.infoControl1.Size = new System.Drawing.Size(117, 58);
-            this.infoControl1.TabIndex = 3;
+            this.barControl1.BackColor = System.Drawing.Color.Transparent;
+            this.barControl1.Location = new System.Drawing.Point(32, 247);
+            this.barControl1.Name = "barControl1";
+            this.barControl1.Size = new System.Drawing.Size(72, 133);
+            this.barControl1.TabIndex = 5;
             // 
             // ledControl1
             // 
@@ -86,11 +87,20 @@
             this.ledControl1.Size = new System.Drawing.Size(20, 20);
             this.ledControl1.TabIndex = 4;
             // 
+            // infoControl1
+            // 
+            this.infoControl1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.infoControl1.Location = new System.Drawing.Point(12, 91);
+            this.infoControl1.Name = "infoControl1";
+            this.infoControl1.Size = new System.Drawing.Size(117, 58);
+            this.infoControl1.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 437);
+            this.Controls.Add(this.barControl1);
             this.Controls.Add(this.ledControl1);
             this.Controls.Add(this.infoControl1);
             this.Controls.Add(this.ListBox);
@@ -99,6 +109,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.ResumeLayout(false);
 
         }
@@ -111,6 +122,7 @@
         private System.Windows.Forms.ListBox ListBox;
         private Simplify.Controls.InfoControl infoControl1;
         private Simplify.Controls.LedControl ledControl1;
+        private Simplify.Controls.BarControl barControl1;
     }
 }
 
