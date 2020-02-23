@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import threading
 import codecs
 
@@ -46,17 +48,18 @@ class DataArea:
 
 
 
-class Signal:
+class Signal(object):
+    """Wraps a variable to be sent across the network."""
+
     SC_CYCLIC   = 1
     SC_IN       = 2
     SC_OUT      = 3
 
-    ST_BOOL     = 1 # Data types that can fit in a single byte has number 1 - 20
-    ST_INT16    = 21 # Data types that can fir in two bytes has number 21-40
-    ST_REAL32   = 41 # etc..
-    
+    ST_BOOL     =  1  # Data types that can fit in a single byte has number 1 - 20
+    ST_INT16    = 21  # Data types that can fir in two bytes has number 21-40
+    ST_REAL32   = 41  # etc..
 
-    def __init__(self, sign_id : int, sub_id : int, signalConfig : int, signalType : int, name : str, value = None, params = None, cb = None, other : dict = None):
+    def __init__(self, sign_id: int, sub_id: int, signalConfig: int, signalType: int, name: str, value=None, params=None, cb=None, other: dict = None):
         self.sign_id = sign_id
         self.sub_id = sub_id
         self.signalConfig = signalConfig

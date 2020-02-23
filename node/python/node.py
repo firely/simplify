@@ -1,11 +1,19 @@
+# -*- coding: utf-8 -*-
+
+"""Module defining the entry point to creating a node instance."""
+
 from simple_socket import simple_socket
-from signals import *
+from signals import DataArea, Signal
+from crcmod import mkCrcFun
 import threading
 import time
-import crcmod
 
-class Node:
-    def __init__(self, address, port = None):
+
+class Node (object):
+    """Class allowing for syncronizing of data over network."""
+
+    def __init__(self, address, port=None):
+        """Default constructor."""
         self.socket = simple_socket(address, port)
         self.thread = None
         self.stopQueue = []
@@ -14,12 +22,16 @@ class Node:
         self.sendLock = threading.Lock()
         self.sendQueue_async = []
         self.dataArea = DataArea()
-        self.calcCRC = crcmod.mkCrcFun(0x18005, rev=False, initCrc=0x0000, xorOut=0xFFFF)
+        poly = 0x18005
+        crct = 0
+        out = 0xFFFF
+        self.calcCRC = mkCrcFun(poly, rev=False, initCrc=crct, xorOut=out)
 
     def async_action(self):
+        """Function to be run asyncronisly."""
         if not self.socket.is_connected():
             self.socket.try_connect()
-        
+
         if self.socket.is_connected():
             # Message queue
             self.sendLock.acquire()
@@ -32,20 +44,21 @@ class Node:
 
             # Update signals
             signs = self.dataArea.getSignalsForSending()
-            self.socket.send(self._packdata_(signs[0], config = True))
-            self.socket.send(self._packdata_(signs[1]))
+            self.socket.send(self._packdata(signs[0], config=True))
+            self.socket.send(self._packdata(signs[1]))
 
     def async_close(self):
+        """Disconnect Node, function run by async thread."""
         self.socket.disconnect()
 
-    def _packdata_(self, data, config = False) -> bytearray:
+    def _packdata(self, data, config=False) -> bytearray:
         if len(data) == 0:
             return None
         frame = bytearray()
-        for s in data:
-            p = s.pack(config)
-            if p is not None:
-                frame.extend(p)
+        for signal in data:
+            packedsignal = signal.pack(config)
+            if packedsignal is not None:
+                frame.extend(packedsignal)
 
         # TBD: Add headers 
         L = len(frame)+4
@@ -58,18 +71,18 @@ class Node:
         frame.extend(bytes([(crc//0x100) & 0xFF, crc & 0xFF]))
         return frame
 
-    def _unpackdata_(self, data):
-        return None
+    def _unpackdata(self, data):
+        raise NotImplementedError()
 
     def start(self):
         if self.thread is not None and self.thread.isAlive():
             print("Function already running - cannot start")
             return
-        self.thread = threading.Thread(target=self._async_thread_)
+        self.thread = threading.Thread(target=self._async_thread)
         self.thread.setDaemon(True)
         self.thread.start()
 
-    def stop(self, timeout = None):
+    def stop(self, timeout=None):
         # There is a thread to wait for
         if self.thread is not None:
             # Command it to stop
@@ -85,15 +98,15 @@ class Node:
         return self.thread is not None and self.thread.isAlive()
 
     def list_me(self):
-        print(threading.enumerate())
+        """Returns all running threads."""
+        return [str(thread) for thread in threading.enumerate()]
 
     def send(self, data):
         self.sendLock.acquire()
         self.sendQueue.append(data)
         self.sendLock.release()
-        return
 
-    def _async_thread_(self):
+    def _async_thread(self):
         print("Thread started")
         while True:
             self.stopLock.acquire()
@@ -107,29 +120,30 @@ class Node:
         self.async_close()
         print("Thread stopped")
 
-    def AddSignal(self, signal):
+    def addsignal(self, signal):
+        """Add signal to node."""
         self.dataArea.addSignal(signal)
 
-    def RemoveSignal(self, signal):
+    def removesignal(self, signal):
+        """Remove signal from node."""
         raise NotImplementedError()
 
-if __name__ == "__main__":
-    # node = Node('127.0.0.1', 13010)
-    node = Node('192.168.10.183', 80)
-    # node = Node('www.python.org', 80)
-    # Setup things
-    sign1 = Signal(0, 1, Signal.SC_OUT, Signal.ST_BOOL, "Tap1")
-    sign2 = Signal(1, 1, Signal.SC_OUT, Signal.ST_BOOL, "Tap2", value=True)
-    node.AddSignal(sign1)
-    node.AddSignal(sign2)
+
+if __name__ == '__main__':
+    port = 13010  # 13010 or 80
+    node = Node('192.168.10.183', port)
+
+    sign1 = Signal(0, 1, Signal.SC_OUT, Signal.ST_BOOL, 'Tap1')
+    sign2 = Signal(1, 1, Signal.SC_OUT, Signal.ST_BOOL, 'Tap2', value=True)
+    node.addsignal(sign1)
+    node.addsignal(sign2)
 
     def status():
+        """Request status."""
         print('Running' if node.running() else 'Stopped')
 
-    def hello_world():
-        node.send(b'Hello World')
-
     def flip():
+        """Flip the two bytes listed above."""
         sign1.write(not sign1.read())
         sign2.write(not sign2.read())
 
@@ -138,13 +152,11 @@ if __name__ == "__main__":
     commands['stop']  = node.stop
     commands['status'] = status
     commands['list'] = node.list_me
-    commands['hello world'] = hello_world
     commands['flip'] = flip
 
+    cmd = input('>> ')
 
-    cmd = input(">> " )
-
-    while(cmd != 'exit' and cmd != 'quit'):
+    while cmd != 'exit' and cmd != 'quit':
         # Do stuff
         if cmd in commands:
             commands[cmd]()
@@ -152,7 +164,7 @@ if __name__ == "__main__":
             print('Undefined command!')
 
         # Get new input
-        cmd = input(">> ")
+        cmd = input('>> ')
 
     # Kill node to release resources
     node.stop()
