@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\BarControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BarControl.Designer.cs">
+      <DependentUpon>BarControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InfoControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -75,6 +81,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\BarControl.resx">
+      <DependentUpon>BarControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\InfoControl.resx">
       <DependentUpon>InfoControl.cs</DependentUpon>
     </EmbeddedResource>
