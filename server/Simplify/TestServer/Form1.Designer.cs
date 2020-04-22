@@ -33,7 +33,7 @@
             this.BtnStop = new System.Windows.Forms.Button();
             this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.ListBox = new System.Windows.Forms.ListBox();
-            this.barControl1 = new Simplify.Controls.BarControl();
+            this.barControl2 = new Simplify.Controls.BarControl();
             this.ledControl1 = new Simplify.Controls.LedControl();
             this.infoControl1 = new Simplify.Controls.InfoControl();
             this.SuspendLayout();
@@ -71,13 +71,17 @@
             this.ListBox.Size = new System.Drawing.Size(263, 368);
             this.ListBox.TabIndex = 2;
             // 
-            // barControl1
+            // barControl2
             // 
-            this.barControl1.BackColor = System.Drawing.Color.Transparent;
-            this.barControl1.Location = new System.Drawing.Point(32, 247);
-            this.barControl1.Name = "barControl1";
-            this.barControl1.Size = new System.Drawing.Size(72, 133);
-            this.barControl1.TabIndex = 5;
+            this.barControl2.BackColor = System.Drawing.Color.Transparent;
+            this.barControl2.Cursor = System.Windows.Forms.Cursors.Default;
+            this.barControl2.Location = new System.Drawing.Point(65, 220);
+            this.barControl2.Maximum = 80F;
+            this.barControl2.Minimum = -80F;
+            this.barControl2.Name = "barControl2";
+            this.barControl2.Size = new System.Drawing.Size(92, 172);
+            this.barControl2.TabIndex = 5;
+            this.barControl2.Value = 0F;
             // 
             // ledControl1
             // 
@@ -100,7 +104,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 437);
-            this.Controls.Add(this.barControl1);
+            this.Controls.Add(this.barControl2);
             this.Controls.Add(this.ledControl1);
             this.Controls.Add(this.infoControl1);
             this.Controls.Add(this.ListBox);
@@ -123,6 +127,7 @@
         private Simplify.Controls.InfoControl infoControl1;
         private Simplify.Controls.LedControl ledControl1;
         private Simplify.Controls.BarControl barControl1;
+        private Simplify.Controls.BarControl barControl2;
     }
 }
 

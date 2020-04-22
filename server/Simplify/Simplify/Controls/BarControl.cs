@@ -18,13 +18,28 @@ namespace Simplify.Controls
         int text_w = 30;
         int bound_offset = 1;
 
-        float value = 0.2f;
+        private float val = 20f;
+        private float val_frac = 0.0f;
+        private float minimum = 0;
+        private float maximum = 100;
+        [Category("0-Signal")]
+        public float Minimum { get => minimum; set { minimum = value; Update_ValFrac();  this.Refresh(); } }
 
-        public BarControl()
+        [Category("0-Signal")]
+        public float Maximum { get => maximum; set{ maximum = value; Update_ValFrac();  this.Refresh(); } }
+
+        [Category("0-Signal")]
+        public float Value { get => val; set { val = value; Update_ValFrac();  this.Refresh(); } }
+
+        public BarControl() => InitializeComponent();
+
+        public void Update_ValFrac()
         {
-            InitializeComponent();
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            // SetStyle(ControlStyles.Opaque, true);
+            if (maximum == minimum)
+                val_frac = 0;
+            val_frac = (val - minimum) / (maximum - minimum);
+            val_frac = val_frac > 1.0f ? 1.0f : val_frac;
+            val_frac = val_frac < 0.0f ? 0.0f : val_frac;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -34,7 +49,7 @@ namespace Simplify.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             var bar_rect = new Rectangle(bound_offset, bound_offset, Size.Width - bound_offset * 2 - tick_w - text_w, Size.Height - bound_offset*2);
-            var barfill_rect = new Rectangle(bound_offset, ((int)(Size.Height * (1 - value))) + bound_offset*2, Size.Width - bound_offset * 2 - tick_w - text_w, ((int)(Size.Height*value)) - bound_offset * 2);
+            var barfill_rect = new Rectangle(bound_offset, ((int)(Size.Height * (1 - val_frac))) + bound_offset*2, Size.Width - bound_offset * 2 - tick_w - text_w, ((int)(Size.Height* val_frac)) - bound_offset * 2);
             var pen_grey = new Pen(Color.Gray, 1f);
 
             e.Graphics.FillRectangle(Brushes.White, bar_rect);
@@ -42,8 +57,8 @@ namespace Simplify.Controls
             e.Graphics.DrawRectangle(pen_grey, bar_rect);
             e.Graphics.DrawLine(pen_grey, Size.Width - bound_offset * 2 - tick_w - text_w, bound_offset, Size.Width - bound_offset * 2 - text_w, bound_offset);
             e.Graphics.DrawLine(pen_grey, Size.Width - bound_offset * 2 - tick_w - text_w, Size.Height - bound_offset, Size.Width - bound_offset * 2 - text_w, Size.Height - bound_offset);
-            e.Graphics.DrawString("100", Font, Brushes.Black, Size.Width - bound_offset * 2 - text_w, bound_offset);
-            e.Graphics.DrawString("0", Font, Brushes.Black, Size.Width - bound_offset * 2 - text_w, Size.Height - bound_offset - 12);
+            e.Graphics.DrawString(Maximum.ToString(), Font, Brushes.Black, Size.Width - bound_offset * 2 - text_w, bound_offset);
+            e.Graphics.DrawString(Minimum.ToString(), Font, Brushes.Black, Size.Width - bound_offset * 2 - text_w, Size.Height - bound_offset - 12);
             base.OnPaint(e);
         }
     }

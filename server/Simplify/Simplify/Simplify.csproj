@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinarySocket.cs" />
     <Compile Include="Controls\BarControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
