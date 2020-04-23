@@ -46,7 +46,6 @@
             this.BtnStart.TabIndex = 0;
             this.BtnStart.Text = "Start";
             this.BtnStart.UseVisualStyleBackColor = true;
-            this.BtnStart.Click += new System.EventHandler(this.Start);
             // 
             // BtnStop
             // 
@@ -56,12 +55,10 @@
             this.BtnStop.TabIndex = 1;
             this.BtnStop.Text = "Stop";
             this.BtnStop.UseVisualStyleBackColor = true;
-            this.BtnStop.Click += new System.EventHandler(this.Stop);
             // 
             // UpdateTimer
             // 
             this.UpdateTimer.Enabled = true;
-            this.UpdateTimer.Tick += new System.EventHandler(this.UpdateHMI);
             // 
             // ListBox
             // 

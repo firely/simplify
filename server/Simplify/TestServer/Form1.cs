@@ -13,6 +13,7 @@ namespace TestServer
 {
     public partial class Form1 : Form
     {
+        /*
         NetworkSocket socket;
         Signals.SignalManager signals;
 
@@ -74,5 +75,6 @@ namespace TestServer
 
             }
         }
+        */
     }
 }

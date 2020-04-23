@@ -13,7 +13,7 @@ namespace Simplify.Controls
 
     public partial class LedControl : UserControl
     {
-
+        /*
         public void Sign_Update(Signals.Signal signal)
         {
             Console.WriteLine("Red");
@@ -23,6 +23,7 @@ namespace Simplify.Controls
                 this.ColorPanel.BackColor = ((bool)signal.Data) ? Color.LawnGreen : Color.Red;
             }
         }
+        */
 
         public LedControl()
         {

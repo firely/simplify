@@ -13,6 +13,7 @@ namespace Simplify.Controls
     public partial class InfoControl : UserControl
     {
 
+        /*
         public void Sign_Update(Signals.Signal signal)
         {
             //Console.WriteLine("Update - " + this.Name);
@@ -21,7 +22,7 @@ namespace Simplify.Controls
                 this.Lbl_Value.Text = ((bool)signal.Data) ? "TRUE" : "FALSE";
             }
         }
-
+        */
 
 
         public InfoControl()
