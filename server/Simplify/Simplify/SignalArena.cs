@@ -15,6 +15,18 @@ namespace Simplify
 
         public Action<Message> SendUpdateCB;
 
+        private MessageBuilder messageBuilder;
+
+        private NodeAddress address = new NodeAddress();
+
+        public SignalArena(ushort SourceID, byte SourceNetID)
+        {
+            address.ID = SourceID;
+            address.NetID = SourceNetID;
+
+            messageBuilder = new MessageBuilder(address);
+        }
+
         public void Update(Message msg)
         {
             switch (msg.MessageType){
@@ -53,11 +65,14 @@ namespace Simplify
                 {
                     NodeAddresses.Add(new NodeAddress() { ID = msg.SourceID, NetID = msg.SourceNetID });
                 }
-                signal = new Signal(msg, node);
 
-                // SendUpdateCB?.Invoke(new MessageBuilder() { }.) -- TODO update this with a rDEFREQ message
-            SignalLookup.Add(ID, signal);
-            Signals.Add(signal);
+                // Create signal
+                signal = new Signal(msg, node);
+                SignalLookup.Add(ID, signal);
+                Signals.Add(signal);
+
+                // Request definition
+                SendUpdateCB?.Invoke(messageBuilder.rDEFREQ(ID, node));
             }
             signal.Update(msg);
 
@@ -77,13 +92,13 @@ namespace Simplify
 
         public void Update(int raw_data_of_some_kind) 
         {
-
+            throw new NotImplementedException();
         }
     }
 
     public class NodeAddress
     {
         public ushort ID;
-        public ushort NetID;
+        public byte NetID;
     }
 }

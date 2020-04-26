@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Simplify
 {
-    class BinarySocket : IDisposable
+    public class BinarySocket : IDisposable
     {
         private Socket socket;
         private Socket open_socket;

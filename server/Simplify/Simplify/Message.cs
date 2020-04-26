@@ -124,12 +124,10 @@ namespace Simplify
 
     public class MessageBuilder
     {
-        public ushort SourceID;
-        public byte SourceNetID;
-        public MessageBuilder(ushort SourceID, byte SourceNetID)
+        private NodeAddress address;
+        public MessageBuilder(NodeAddress address)
         {
-            this.SourceID = SourceID;
-            this.SourceNetID = SourceNetID;
+            this.address = address;
         }
 
         // Generate a sTIMESYNC message, indicating the current time
@@ -144,15 +142,15 @@ namespace Simplify
             return new Message()
             {
                 MessageType     = Message.eMessageType.sTIMESYNC,
-                SourceID        = this.SourceID,
-                SourceNetID     = this.SourceNetID,
+                SourceID        = address.ID,
+                SourceNetID     = address.NetID,
                 TargetID        = 0,
                 TargetNetID     = 0,
                 Content = BitConverter.GetBytes(time.Ticks)
             };
         }
 
-        public Message pUPDSING(ushort var_id, ushort var_subid, byte data_type, byte[] raw_data, bool req_conf = false)
+        public Message pUPDSING(UInt32 var_id, byte data_type, byte[] raw_data, bool req_conf = false)
         {
             byte[] cont = new byte[Message.HEADER_SIZE + 13 + raw_data.Length];
             int n = 0;
@@ -161,10 +159,8 @@ namespace Simplify
             tmp = BitConverter.GetBytes(var_id);
             cont[n++] = tmp[0];
             cont[n++] = tmp[1];
-
-            tmp = BitConverter.GetBytes(var_subid);
-            cont[n++] = tmp[0];
-            cont[n++] = tmp[1];
+            cont[n++] = tmp[2];
+            cont[n++] = tmp[3];
 
             cont[n++] = (byte) (req_conf? 1 : 0);
 
@@ -185,11 +181,37 @@ namespace Simplify
             return new Message()
             {
                 MessageType = Message.eMessageType.pUPDSING,
-                SourceID = this.SourceID,
-                SourceNetID = this.SourceNetID,
+                SourceID = address.ID,
+                SourceNetID = address.NetID,
                 TargetID = 0,
                 TargetNetID = 0,
                 Content = cont
+            };
+        }
+
+        public Message rDEFREQ(UInt32 var_id, NodeAddress TargetNode)
+        {
+            return new Message()
+            {
+                MessageType = Message.eMessageType.rDEFREQ,
+                SourceID = address.ID,
+                SourceNetID = address.NetID,
+                TargetID = TargetNode.ID,
+                TargetNetID = TargetNode.NetID,
+                Content = BitConverter.GetBytes(var_id)
+            };
+        }
+
+        public Message vVERIFY(UInt32 message_id, NodeAddress TargetNode)
+        {
+            return new Message()
+            {
+                MessageType = Message.eMessageType.vVERIFY,
+                SourceID = address.ID,
+                SourceNetID = address.NetID,
+                TargetID = TargetNode.ID,
+                TargetNetID = TargetNode.NetID,
+                Content = BitConverter.GetBytes(message_id)
             };
         }
     }

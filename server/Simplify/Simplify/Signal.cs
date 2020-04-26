@@ -66,7 +66,9 @@ namespace Simplify
 
         public static UInt32 GetVariableID(Message msg)
         {
-            return BitConverter.ToUInt32(msg.Content, 0);
+            if(msg.MessageType == Message.eMessageType.pUPDSING || msg.MessageType == Message.eMessageType.pUPDSING)
+                return BitConverter.ToUInt32(msg.Content, 0);
+            throw new Exception("Call not valid for this message type");
         }
     }
 }
